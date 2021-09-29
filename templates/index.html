@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<!-- this document was adapted from W3Schools Responsive HTML page  https://www.w3schools.com/html/html_responsive.asp -->
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='hunt.js') }}"></script>
+<style type="text/css">@font-face{font-family:'Material Icons';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/materialicons/v92/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');}.material-icons{font-family:'Material Icons';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}</style>
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPPXGiGLcVpdeNjdKsHCYFZ1KrUzIPidE"></script>-->
+<script>var token = '{{ id_token }}'</script>
+
+</head>
+<body>
+    <div id="home-page" style="display: block;">  
+    <div class="top-bar">   
+        <!-- profile button -->   
+        <a href="/ui_login"><button class="button alt-gradient-button" id="profile-button">
+            <i class="material-icons">person</i>
+            Login
+        </button></a>
+        <br>
+        <br>
+        <br>
+        <!-- headline -->
+    <h1>Treasure Hunt</h1>
+    <h2>It's not about the treasure, it's about the hunt</h2>
+    </div>
+
+
+    <div class="main">
+        <!-- welcome message -->
+        <div class="container1" id="c1">
+
+        <!-- Button Container -->
+            <div class="button-box">
+                <h4>Get started by logging in and selecting from our hunts, or create one of your own!</h4>
+                <form>
+                    
+                    <button type="button" class="button alt-gradient-button" id="b1" onclick="toggleButton1()">
+                        <i class="material-icons">add</i>
+                        Create a Hunt
+                    </button>
+                
+                    <button type="button" class="button alt-gradient-button" id="b2" onclick="toggleButton2()" >
+                        <i class="material-icons">search</i>
+                        Choose a Hunt
+                    </button>
+                </form>
+            </div>
+            
+        
+        </div>
+        <!-- For Testing-->
+        <div id="msg">
+            <pre></pre>
+        </div>
+
+        <!-- hidden pop up 1 for creating a hunt -->
+        <div class="container2" id="c2" style="display: none;">
+            <div class="create-hunt">
+                <h3>Create a Treasure Hunt!</h3>
+                <p>Enter the details below.</p>
+
+                <form class="create-form" id="create-hunt-form">
+                    <div class="create-input">
+                        <label for="hunt-title">Hunt Title:</label><br>
+                        <input type="text" id="hunt-title" name="hunt-title"><br>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="hunt-theme">Hunt Theme:</label><br>
+                        <input type="text" id="hunt-theme" name="hunt-theme"><br>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="clue-number">Number of Clues:</label><br>
+                        <input type="number" id="clue-number" name="clue-number"><br>
+                    </div>
+                    <br>
+                    <button type="button" class="button alt-gradient-button" id="createHunt">
+                        <i class="material-icons">done</i>
+                        Add Clues
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- hidden pop up 1 -->
+        <div class="container2" id="c2-2" style="display: none;">
+            <div class="create-hunt">
+                <p>Enter the clues below.</p>
+                <form class="create-clues" id="create-clues-form">
+
+                    <!-- Clue div goes here. It is dynamically created in JS depending on num selected -->
+                    <!-- Buttons -->
+                    <br>
+                    <button type="button" class="button alt-gradient-button" id="submit-clues">
+                        <i class="material-icons">add</i>
+                        add Treasure
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- hidden pop up 2 -->
+        <div class="container2-2" id="c2-3" style="display: none;">
+            <div class="create-treasure">
+                <p>Enter the treasure below.</p>
+                <form class="create-treasure" id="create-treasure-form">
+                    
+                    <!-- Treasure -->   
+                    <div class="create-input" id="treasure-input" style="display: none;">     
+                        <label for="treasure">Treasure:</label><br>
+                        <input type="text" class="treasure-info" id="treasure" name="treasure"><br><br>
+                        <label for="treasure-loc">Treasure Location:</label><br>
+                        <input type="text" class="treasure-info" id="treasure1-loc" name="treasure-loc" readonly>
+                        <button type="button" class="button alt-gradient-button" id="treasure1" onclick="createClueMap(this.id)" >
+                            <!--<i class="material-icons">add</i>-->
+                            map
+                        </button>
+                    </div> 
+                    <br><br>
+                    <!-- Buttons -->
+                    <button type="button" class="button alt-gradient-button" id="submit-treasure">
+                        <i class="material-icons">add</i>
+                        Finalize Hunt
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- hidden pop up 3 for retrieving the hunts -->
+        <div class="container3" id="c3" style="display: none;">
+            <form id="choose-hunt-form">
+                <div class="find-hunt">
+                    <h3>Find a Hunt</h3>
+                    <h4>Choose from the list of available Treasure Hunts.</h4>
+                    <div class="choose-input" id="find-hunt-radio-box"></div>
+                    <br>
+                    <!-- button to edit hunt -->
+                    <button type="button" class="button alt-gradient-button" id="edit-hunt-choose">
+                        <i class="material-icons">done</i>
+                        Edit Hunt
+                    </button>
+                    <!-- link play button to play page -->
+                    <button type="button" class="button alt-gradient-button" id="play" onclick="toggleMap()">
+                        <i class="material-icons">done</i>
+                        Play
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- hidden pop up 4 for confirming hunt -->
+        <div class="container4" id="c4" style="display: none;">
+            <form id="confirm-hunt">
+                <div class="confirm-hunt">
+                    <h3>Confirm Hunt</h3>
+                    <div id="hunt-info"></div>
+                    <br>
+                    <!-- button to edit -->
+                    <button type="button" class="button alt-gradient-button" id="edit-hunt-confirm-button" onClick="deleteHunt()">
+                        <i class="material-icons">done</i>
+                        Cancel
+                    </button>
+                    <!-- button to confirm -->
+                    <button type="button" class="button alt-gradient-button" id="hunt-confirm-button" onClick="window.location.reload()">
+                        <i class="material-icons">done</i>
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- hidden pop up 5 for editing hunt -->
+        <div class="container5" id="c5" style="display: none;">
+            <form id="edit-hunt">
+                <div class="edit-hunt">
+                    <h3>Edit this Hunt</h3>
+                    <div id="hunt-edit-info"></div>
+                    <br>
+                    <!-- button to delete hunt -->
+                    <button type="button" class="button primary delete" id="hunt-delete-button" onClick="deleteHunt()">
+                        Delete Hunt
+                    </button>
+                    <br>
+                    <br>
+                    <!-- button to cancel -->
+                    <button type="button" class="button alt-gradient-button" id="cancel" onClick="window.location.reload()">
+                        <i class="material-icons">done</i>
+                        Cancel
+                    </button>
+                    <!-- button to confirm -->
+                    <button type="button" class="button alt-gradient-button" id="confirm" onClick="window.location.reload()">
+                        <i class="material-icons">done</i>
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    </div>
+
+    </div><!--end home page -->
+    <!-- map modal-->
+    <div id="play-map-box">
+        <button type="button" class="button alt-gradient-button" id="clue-distance-button" style="display: none;" onclick="distanceToClue()">
+            Distance to clue
+        </button>
+        <button type="button" class="button alt-gradient-button" id="treasure-distance-button" style="display: none;" onclick="distanceToTreasure()">
+            Distance to treasure
+        </button>
+        <div id="map" style="display: none;"></div>
+        <button type="button" class="button alt-gradient-button" id="map-done" style="display: none;" onclick="toggleMap()" >
+            <i class="material-icons">done</i>
+            Done
+        </button>
+    </div>
+
+    <!-- small map to enter clue info -->
+    <div class="map-box" id="mini-map-input" style="display: none;">  
+        <div id="mini-map"></div>
+        <button type="button" class="button alt-gradient-button" id="map-done" style="display: inline;" onclick="createClueMap(this.id)" >
+            <i class="material-icons">done</i>
+            Done
+        </button>
+    </div>
+
+    <!-- section for the loading screen -->
+    <div class="modal" id="loading"><!-- Place at bottom of page --></div>
+
+
+    <!--Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPPXGiGLcVpdeNjdKsHCYFZ1KrUzIPidE&callback=initMap"
+      async
+    ></script>
+</body>
+</html>
